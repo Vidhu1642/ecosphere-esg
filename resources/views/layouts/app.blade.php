@@ -138,35 +138,40 @@
                                 <li><p>Phone: <a href="tel:+1234567890">(123) 456-7890</a></p></li>
                             </ul>
                             <div class="footer-esg-actions">
-                                <a href="#" class="footer-esg-btn">Get direction</a>
-                            </div>
+    <a href="https://maps.google.com/?q=Akshar+Yug+Society+Shripore+Timbi+Vadodara+Gujarat+390019"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="footer-esg-btn">
+        <i class="bi bi-compass-fill"></i> Get Directions
+    </a>
+</div>
                         </div>
 
                         <div class="footer-esg-col">
                             <h6>About</h6>
                             <ul class="footer-esg-links">
-                                <li><a href="#">About EcoSphere</a></li>
-                                <li><a href="#">Our Mission</a></li>
-                                <li><a href="#">Contact Us</a></li>
+                                <li><a href="{{ route('about.show') }}">About EcoSphere</a></li>
+                                <li><a href="{{ route('mission.show') }}">Our Mission</a></li>
+                                <li><a href="{{ route('contact.show') }}">Contact Us</a></li>
                             </ul>
                         </div>
 
                         <div class="footer-esg-col">
                             <h6>Resources</h6>
                             <ul class="footer-esg-links">
-                                <li><a href="#">Documentation</a></li>
-                                <li><a href="#">ESG Reports</a></li>
-                                <li><a href="#">FAQs</a></li>
-                                <li><a href="#">User Guide</a></li>
+                                <li><a href="{{ route('documentation.show') }}">Documentation</a></li>
+                                <li><a href="{{ route('EGreports.show') }}">ESG Reports</a></li>
+                                <li><a href="{{ route('faq.show') }}">FAQs</a></li>
+                                <li><a href="{{ route('userquide.show') }}">User Guide</a></li>
                             </ul>
                         </div>
 
                         <div class="footer-esg-col">
                             <h6>Legal</h6>
                             <ul class="footer-esg-links">
-                                <li><a href="#">Privacy Policy</a></li>
-                                <li><a href="#">Terms &amp; Conditions</a></li>
-                                <li><a href="#">Data Protection Policy</a></li>
+                                <li><a href="{{ route('privacy-policy.show') }}">Privacy Policy</a></li>
+                                <li><a href="{{ route('terms.show') }}">Terms &amp; Conditions</a></li>
+                                <li><a href="{{ route('data-protection.show') }}">Data Protection Policy</a></li>
                             </ul>
                         </div>
                     </div>

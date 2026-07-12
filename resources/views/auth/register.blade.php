@@ -140,9 +140,9 @@
         </div>
 
         <div class="hero-copy">
-            <h1>Join the Team Driving Change</h1>
+            <h1>Building a Sustainable Future Together</h1>
             <div class="hero-rule"></div>
-            <p>Create your account to start monitoring, measuring, and managing Environmental, Social &amp; Governance performance.</p>
+            <p>Monitor. Measure. Manage. Empowering organizations to achieve Environmental, Social &amp; Governance excellence.</p>
         </div>
 
         <div class="hero-illustration">

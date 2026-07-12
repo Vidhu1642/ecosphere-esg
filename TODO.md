@@ -1,13 +1,14 @@
-# Dashboard chart upgrade (Chart.js)
+# TODO
 
-- [x] Update `resources/views/dashboard.blade.php` to load Chart.js (CDN)
-- [x] Replace Carbon Trend HTML columns with Chart.js bar chart
-- [x] Replace Department Score bars with Chart.js grouped/stacked chart
-- [x] Keep summary cards intact
-- [ ] Quick visual test: open `/dashboard`
+- [x] Read current About Us view and existing CSS styling.
+- [x] Improve About Us UI markup (add missing classes/structure where needed).
+- [x] Improve About Us CSS: add consistent spacing, add feature pill styles, add CTA strip + stats, improve responsiveness.
 
-- [x] Login UI improvement: update `resources/views/auth/login.blade.php`
-- [x] Register UI improvement: update `resources/views/auth/register.blade.php`
+- [x] Sanity-check for CSS class name mismatches.
+
+- [x] Final verification: ensure About page renders with new styles.
+
+
 
 
 
