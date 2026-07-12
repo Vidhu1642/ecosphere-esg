@@ -6,4 +6,8 @@
 - [x] Keep summary cards intact
 - [ ] Quick visual test: open `/dashboard`
 
+- [x] Login UI improvement: update `resources/views/auth/login.blade.php`
+- [x] Register UI improvement: update `resources/views/auth/register.blade.php`
+
+
 
