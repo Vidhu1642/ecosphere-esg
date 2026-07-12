@@ -43,8 +43,21 @@
         @media (max-width: 900px) { .shell { grid-template-columns:1fr; } aside { position:relative; height:auto; } .two { grid-template-columns:1fr; } }
 
         /* ESG footer styles */
-        .footer-esg { margin-top:26px; background:#0b1713; color:#eef7f0; }
+        /* Fixed footer for all pages */
+        .footer-esg {
+            position: fixed;
+            left: 260px; /* avoid covering the left menu */
+            right: 0;
+            bottom: 0;
+            margin-top: 0;
+            background:#0b1713;
+            color:#eef7f0;
+            z-index: 10;
+        }
         .footer-esg-wrap { padding:26px 22px; }
+
+        /* Create space for fixed footer */
+        .app-content { padding-bottom: 320px; }
         .footer-esg-body { border-top:1px solid rgba(223,231,226,.25); padding-top:18px; }
         .footer-esg-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:18px; max-width:1100px; margin:0 auto; }
         .footer-esg-col h6 { margin:0 0 10px; font-size:13px; letter-spacing:.02em; color:#d6efe1; }
@@ -103,7 +116,8 @@
                 <form method="POST" action="{{ route('scores.recalculate') }}">@csrf<button type="submit">Recalculate ESG</button></form>
             </div>
             @if(session('status'))<div class="alert">{{ session('status') }}</div>@endif
-@yield('content')
+            {{-- fixed footer requires bottom padding so content doesn't hide under it --}}
+            <div class="app-content">@yield('content')</div>
 
         {{-- ESG footer (based on your requested footer layout) --}}
         <footer class="footer-esg">
@@ -111,49 +125,49 @@
                 <div class="footer-esg-body">
                     <div class="footer-esg-grid">
                         <div class="footer-esg-col">
-                            <div class="footer-esg-logo">
-                                <a href="{{ route('dashboard') }}">
-                                    <img src="{{ asset('website/images/nanzi/nanzi logov1.png') }}" alt="logo" class="footer-esg-logo-img">
+                            <div class="footer-esg-logo" style="margin-bottom: 12px;">
+                                <a href="{{ route('dashboard') }}" style="font-size: 22px; font-weight: 700; color: #eef7f0; text-decoration: none;">
+                                    EcoSphere ESG
                                 </a>
                             </div>
                             <ul class="footer-esg-list">
                                 <li>
-                                    <p>Address: Globe business park, Flat No. 249, Plot No. 30, Kalyan - Badlapur Rd, Lakshmi Nagar, <br> Ambernath W 421505</p>
+                                    <p>123 Green Way, Sustainability City, 12345</p>
                                 </li>
-                                <li><p>Email: <a href="#">shreens2024@gmail.com</a></p></li>
-                                <li><p>Phone: <a href="#">(+91) 77588 51124</a></p></li>
+                                <li><p>Email: <a href="mailto:contact@ecosphere.com">contact@ecosphere.com</a></p></li>
+                                <li><p>Phone: <a href="tel:+1234567890">(123) 456-7890</a></p></li>
                             </ul>
                             <div class="footer-esg-actions">
-                                <a href="https://www.google.com/maps/dir/?api=1&destination=GLOBE+BUSINESS+PARK" target="_blank" class="footer-esg-btn">Get direction</a>
+                                <a href="#" class="footer-esg-btn">Get direction</a>
                             </div>
                         </div>
 
                         <div class="footer-esg-col">
-                            <h6>Help</h6>
+                            <h6>About</h6>
                             <ul class="footer-esg-links">
-                                <li><a href="#">Privacy Policy</a></li>
-                                <li><a href="#">Shipping</a></li>
-                                <li><a href="#">Terms &amp; Conditions</a></li>
-                                <li><a href="#">Pricing &amp; Policy</a></li>
-                                <li><a href="#">Cancellation &amp; Refund</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="footer-esg-col">
-                            <h6>About us</h6>
-                            <ul class="footer-esg-links">
-                                <li><a href="#">Our Story</a></li>
+                                <li><a href="#">About EcoSphere</a></li>
+                                <li><a href="#">Our Mission</a></li>
                                 <li><a href="#">Contact Us</a></li>
                             </ul>
                         </div>
 
                         <div class="footer-esg-col">
-                            <h6>Sign Up for Email</h6>
-                            <p class="footer-esg-muted">Sign up to get first dibs on new arrivals, sales, exclusive content, events and more!</p>
-                            <form class="footer-esg-form" action="#" method="post">
-                                <input type="email" name="email" placeholder="Enter your email..." required>
-                                <button type="submit" class="footer-esg-submit">Subscribe</button>
-                            </form>
+                            <h6>Resources</h6>
+                            <ul class="footer-esg-links">
+                                <li><a href="#">Documentation</a></li>
+                                <li><a href="#">ESG Reports</a></li>
+                                <li><a href="#">FAQs</a></li>
+                                <li><a href="#">User Guide</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="footer-esg-col">
+                            <h6>Legal</h6>
+                            <ul class="footer-esg-links">
+                                <li><a href="#">Privacy Policy</a></li>
+                                <li><a href="#">Terms &amp; Conditions</a></li>
+                                <li><a href="#">Data Protection Policy</a></li>
+                            </ul>
                         </div>
                     </div>
                 </div>

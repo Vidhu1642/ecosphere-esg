@@ -37,7 +37,48 @@
         background:rgba(31,122,74,.10);
         transform:rotate(18deg);
         border-radius:28px;
+        transition: background .2s ease;
     }
+
+    /* KPI accent colors */
+    .kpi-accent{ position:relative; z-index:1; }
+    .kpi-accent .kpi-title{ font-weight:800; font-size:12px; text-transform:uppercase; letter-spacing:.06em; }
+
+    .accent-departments{ --accent:#28a745; --accent-soft: rgba(40,167,69,.12); --accent-line: rgba(40,167,69,1); }
+    .accent-employees{ --accent:#1e73ff; --accent-soft: rgba(30,115,255,.12); --accent-line: rgba(30,115,255,1); }
+    .accent-carbon{ --accent:#f5a623; --accent-soft: rgba(245,166,35,.14); --accent-line: rgba(245,166,35,1); }
+    .accent-csr{ --accent:#7c3aed; --accent-soft: rgba(124,58,237,.13); --accent-line: rgba(124,58,237,1); }
+    .accent-challenges{ --accent:#f1c40f; --accent-soft: rgba(241,196,15,.14); --accent-line: rgba(241,196,15,1); }
+    .accent-compliance{ --accent:#e11d48; --accent-soft: rgba(225,29,72,.14); --accent-line: rgba(225,29,72,1); }
+
+    .kpi-accent.accent-departments .metric,
+    .kpi-accent.accent-employees .metric,
+    .kpi-accent.accent-carbon .metric,
+    .kpi-accent.accent-csr .metric,
+    .kpi-accent.accent-challenges .metric,
+    .kpi-accent.accent-compliance .metric{ color: var(--accent); }
+
+.kpi-accent.accent-departments .sparkline::before,
+    .kpi-accent.accent-employees .sparkline::before,
+    .kpi-accent.accent-carbon .sparkline::before,
+    .kpi-accent.accent-csr .sparkline::before,
+    .kpi-accent.accent-challenges .sparkline::before,
+    .kpi-accent.accent-compliance .sparkline::before{ background: linear-gradient(90deg, var(--accent) , var(--accent)); opacity:.22; }
+
+    .kpi-accent.accent-departments .sparkline,
+    .kpi-accent.accent-employees .sparkline,
+    .kpi-accent.accent-carbon .sparkline,
+    .kpi-accent.accent-csr .sparkline,
+    .kpi-accent.accent-challenges .sparkline,
+    .kpi-accent.accent-compliance .sparkline{ border-color: var(--accent-soft); background: linear-gradient(90deg, var(--accent-soft), rgba(31,122,74,.18)); }
+
+    /* Set the card highlight blob to the KPI accent */
+    .kpi-accent.accent-departments::after,
+    .kpi-accent.accent-employees::after,
+    .kpi-accent.accent-carbon::after,
+    .kpi-accent.accent-csr::after,
+    .kpi-accent.accent-challenges::after,
+    .kpi-accent.accent-compliance::after{ background: var(--accent-soft); }
     .dash-card .inner{ position:relative; z-index:1; }
     .dash-metric {
         display:flex;
@@ -84,19 +125,145 @@
     }
 </style>
 
+<!-- Chart.js (real charts for dashboard) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
+<script>
+    // Avoid polluting global scope too much, but keep it simple for Blade.
+    function renderCharts() {
+        const deptCanvas = document.getElementById('deptScoreChart');
+        const carbonCanvas = document.getElementById('carbonTrendChart');
+
+        if (deptCanvas) {
+            const ctx = deptCanvas.getContext('2d');
+            const labels = @json($scores->pluck('department_name')->values());
+            const environmental = @json($scores->pluck('environmental')->map(fn($v)=> (float)$v)->values());
+            const social = @json($scores->pluck('social')->map(fn($v)=> (float)$v)->values());
+            const governance = @json($scores->pluck('governance')->map(fn($v)=> (float)$v)->values());
+            const overall = @json($scores->pluck('overall')->map(fn($v)=> (float)$v)->values());
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [
+                        {
+                            label: 'Environmental (E)',
+                            data: environmental,
+                            backgroundColor: 'rgba(36, 92, 143, 0.55)',
+                            borderColor: 'rgba(36, 92, 143, 1)',
+                            borderWidth: 1,
+                        },
+                        {
+                            label: 'Social (S)',
+                            data: social,
+                            backgroundColor: 'rgba(31, 122, 74, 0.55)',
+                            borderColor: 'rgba(31, 122, 74, 1)',
+                            borderWidth: 1,
+                        },
+                        {
+                            label: 'Governance (G)',
+                            data: governance,
+                            backgroundColor: 'rgba(165, 105, 18, 0.55)',
+                            borderColor: 'rgba(165, 105, 18, 1)',
+                            borderWidth: 1,
+                        },
+                        {
+                            label: 'Overall (O)',
+                            data: overall,
+                            backgroundColor: 'rgba(112, 142, 122, 0.55)',
+                            borderColor: 'rgba(112, 142, 122, 1)',
+                            borderWidth: 1,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: false, ticks: { maxRotation: 0, autoSkip: true } },
+                        y: {
+                            beginAtZero: true,
+                            suggestedMax: 100,
+                            ticks: { callback: (value) => value }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: { enabled: true }
+                    }
+                }
+            });
+        }
+
+        if (carbonCanvas) {
+            const ctx2 = carbonCanvas.getContext('2d');
+            const labels2 = @json($carbonTrend->pluck('month')->values());
+            const totals2 = @json($carbonTrend->pluck('total')->map(fn($v)=> (float)$v)->values());
+
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: labels2,
+                    datasets: [
+                        {
+                            label: 'CO2 (kg)',
+                            data: totals2,
+                            backgroundColor: 'rgba(36, 92, 143, 0.55)',
+                            borderColor: 'rgba(36, 92, 143, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { ticks: { maxRotation: 0, autoSkip: true } },
+                        y: { beginAtZero: true }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `CO2: ${Number(ctx.parsed.y).toFixed(2)} kg`
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    // Wait a tick so canvas sizing/layout is stable.
+    window.addEventListener('load', renderCharts);
+</script>
 
 <div class="grid cards">
     @foreach($cards as $label => $value)
+        @php
+            $accentClass = match(true) {
+                $label === 'Departments' => 'accent-departments',
+                $label === 'Employees' => 'accent-employees',
+                $label === 'Carbon Emission' => 'accent-carbon',
+                $label === 'CSR Activities' => 'accent-csr',
+                $label === 'Challenges' => 'accent-challenges',
+                $label === 'Compliance Issues' => 'accent-compliance',
+                default => ''
+            };
+        @endphp
+
         <div class="card dash-card">
             <div class="inner">
-                <div class="muted" style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em">{{ $label }}</div>
-                <div class="dash-metric">
-                    <div>
-                        <div class="metric">{{ $value }}</div>
-                        <div class="hint">Measured from latest operations</div>
+                <div class="kpi-accent {{ $accentClass }}">
+                    <div class="muted kpi-title">{{ $label }}</div>
+                    <div class="dash-metric">
+                        <div>
+                            <div class="metric">{{ $value }}</div>
+                            <div class="hint">Measured from latest operations</div>
+                        </div>
+                        <div class="sparkline" aria-hidden="true"></div>
                     </div>
-                    <div class="sparkline" aria-hidden="true"></div>
                 </div>
             </div>
         </div>
@@ -104,52 +271,41 @@
 </div>
 
 <div class="grid two dash-section">
+    {{-- Department Score (Charts) --}}
     <div class="panel dash-table">
-        <h2>Department Score</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Department</th>
-                    <th>E</th>
-                    <th>S</th>
-                    <th>G</th>
-                    <th>Total</th>
-                    <th>Overall</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($scores as $score)
-                    <tr>
-                        <td>{{ $score->department_name }}</td>
-                        <td>{{ $score->environmental }}</td>
-                        <td>{{ $score->social }}</td>
-                        <td>{{ $score->governance }}</td>
-                        <td>{{ $score->department_total }}</td>
-                        <td>{{ $score->overall }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="empty-hint">Add operations or activities, then recalculate ESG.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+        <h2>Department Score (Charts)</h2>
+
+        <div class="chart-legend">
+            <span class="legend-dot e"></span> E
+            <span class="legend-dot s" style="margin-left:14px"></span> S
+            <span class="legend-dot g" style="margin-left:14px"></span> G
+            <span class="legend-dot o" style="margin-left:14px"></span> Overall
+        </div>
+
+        <div style="height:360px;">
+            <canvas id="deptScoreChart"></canvas>
+        </div>
+
+        @if(!$scores->count())
+            <div class="empty-state" style="margin-top:10px;">
+                <div class="empty-hint">Add operations or activities, then recalculate ESG.</div>
+            </div>
+        @endif
     </div>
 
+    {{-- Right side charts + lists --}}
     <div class="grid">
         <div class="panel">
-            <h2>Carbon Trend</h2>
-            <div class="trend-list">
-                @forelse($carbonTrend as $month)
-                    <p>
-                        <strong>{{ $month->month }}</strong>
-                        <span class="muted">·</span>
-                        {{ round($month->total, 2) }} kg CO2
-                    </p>
-                @empty
-                    <p class="muted">No carbon transactions yet.</p>
-                @endforelse
-            </div>
+            <h2>Carbon Trend (Bar Chart)</h2>
+
+            @if($carbonTrend->count())
+                <div style="height:340px;">
+                    <canvas id="carbonTrendChart"></canvas>
+                </div>
+                <div class="muted" style="margin-top:10px; font-size:13px">Higher bar = more CO2 (last 6 months)</div>
+            @else
+                <p class="muted">No carbon transactions yet.</p>
+            @endif
         </div>
 
         <div class="panel">
